@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>📚 Library Management System</h1>
+            <div id="user-section">
+                <div id="login-form">
+                    <input type="text" id="username" placeholder="Username">
+                    <input type="password" id="password" placeholder="Password">
+                    <button onclick="login()">Login</button>
+                    <button onclick="register()">Register</button>
+                </div>
+                <div id="user-info" style="display: none;">
+                    <span id="welcome-msg"></span>
+                    <button onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search for books by title or author...">
+                <button onclick="searchBooks()">Search</button>
+            </div>
+            <div class="filters">
+                <select id="filter-author" onchange="applyFilters()">
+                    <option value="">All Authors</option>
+                </select>
+                <select id="filter-year" onchange="applyFilters()">
+                    <option value="">All Years</option>
+                </select>
+                <select id="filter-genre" onchange="applyFilters()">
+                    <option value="">All Genres</option>
+                </select>
+                <select id="filter-available" onchange="applyFilters()">
+                    <option value="">All Books</option>
+                    <option value="true">Available Only</option>
+                    <option value="false">Checked Out</option>
+                </select>
+                <select id="sort-by" onchange="applyFilters()">
+                    <option value="title">Sort by Title</option>
+                    <option value="author">Sort by Author</option>
+                    <option value="year">Sort by Year</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Trending Books Section -->
+        <section class="trending-section">
+            <h2>🔥 Top 5 Trending Books</h2>
+            <div id="trending-books" class="book-grid">
+                <p>Loading trending books...</p>
+            </div>
+        </section>
+
+        <!-- Recommendations Section (shown when logged in) -->
+        <section id="recommendations-section" class="recommendations-section" style="display: none;">
+            <h2>📖 Recommended For You</h2>
+            
+            <div class="recommendation-group">
+                <h3>Based on Authors You've Read</h3>
+                <div id="rec-by-author" class="book-grid">
+                    <p>Loading...</p>
+                </div>
+            </div>
+
+            <div class="recommendation-group">
+                <h3>From Similar Years</h3>
+                <div id="rec-by-year" class="book-grid">
+                    <p>Loading...</p>
+                </div>
+            </div>
+
+            <div class="recommendation-group">
+                <h3>Readers Like You Also Enjoyed</h3>
+                <div id="rec-similar-users" class="book-grid">
+                    <p>Loading...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search Results / All Books Section -->
+        <section class="books-section">
+            <h2>📚 Browse Books</h2>
+            <div id="books-list" class="book-grid">
+                <p>Loading books...</p>
+            </div>
+            <div class="pagination">
+                <button id="prev-btn" onclick="prevPage()" disabled>Previous</button>
+                <span id="page-info">Page 1</span>
+                <button id="next-btn" onclick="nextPage()">Next</button>
+            </div>
+        </section>
+
+        <!-- User Checkouts Section -->
+        <section id="my-checkouts-section" class="checkouts-section" style="display: none;">
+            <h2>📋 My Current Checkouts</h2>
+            <div id="my-checkouts" class="book-grid">
+                <p>No active checkouts</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Library Management System - CSCN73060 Web Project</p>
+        <p id="load-time"></p>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
