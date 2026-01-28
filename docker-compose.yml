@@ -1,6 +1,5 @@
-version: '3.8'
-
 services:
+  # Main Flask web application
   web:
     build: .
     ports:
@@ -12,4 +11,25 @@ services:
       - FLASK_APP=run.py
       - FLASK_ENV=development
       - DATABASE_PATH=/app/data/library.db
+    restart: unless-stopped
+
+  # Documentation generator service
+  # Run with: docker-compose --profile docs run --rm docs
+  docs:
+    build: .
+    volumes:
+      - .:/app
+      - ./docs:/app/docs
+    command: doxygen Doxyfile
+    profiles:
+      - docs
+
+  # Documentation server (serves generated docs on port 8080)
+  # Run with: docker-compose up docs-server
+  docs-server:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docs/html:/usr/share/nginx/html:ro
     restart: unless-stopped
