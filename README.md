@@ -104,11 +104,7 @@ python run.py
 
 ```bash
 # Import 10,000 books (default)
-python scripts/import_data.py
+python data/import_data.py
 
-# Import custom number of books
-python scripts/import_data.py --limit 5000
-
-# Create sample users and checkouts
-python scripts/import_data.py --users 100 --checkouts 500
-```
+# Verify Import
+python data/verifydb.py
