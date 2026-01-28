@@ -1,0 +1,39 @@
+# Git ignore file for Library Web Application
+
+# Documentation output (generated)
+docs/html/
+docs/latex/
+docs/*.tag
+docs/*.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Database files
+data/*.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
