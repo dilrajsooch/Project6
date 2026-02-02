@@ -69,6 +69,19 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users(user_id)
         )
     ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS reviews (
+            review_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            book_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            rating INTEGER CHECK(rating >= 0 AND rating <= 10),
+            comment TEXT,
+            image BLOB,
+            FOREIGN KEY (book_id) REFERENCES books(book_id),
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )
+    ''')
     
     # Create indexes for better query performance (can be removed to test slow queries)
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_books_author ON books(author)')
