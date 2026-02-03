@@ -1,0 +1,214 @@
+# Doxyfile - Doxygen Configuration for Library Web Application
+# Project: Library Flask Application
+# This configuration generates documentation from Python docstrings
+
+#---------------------------------------------------------------------------
+# Project related configuration options
+#---------------------------------------------------------------------------
+
+# Project name displayed in documentation
+PROJECT_NAME           = "Library Web Application"
+
+# Project version/release
+PROJECT_NUMBER         = "1.0.0"
+
+# Brief project description
+PROJECT_BRIEF          = "A Flask-based library management system with REST API"
+
+# Project logo (optional - leave empty if none)
+PROJECT_LOGO           =
+
+# Output directory for generated documentation
+OUTPUT_DIRECTORY       = docs
+
+# Create subdirectories for output formats
+CREATE_SUBDIRS         = NO
+
+# Output language
+OUTPUT_LANGUAGE        = English
+
+#---------------------------------------------------------------------------
+# Build related configuration options
+#---------------------------------------------------------------------------
+
+# Extract documentation for all entities
+EXTRACT_ALL            = YES
+
+# Extract private class members
+EXTRACT_PRIVATE        = YES
+
+# Extract static members
+EXTRACT_STATIC         = YES
+
+# Extract local classes and methods
+EXTRACT_LOCAL_CLASSES  = YES
+
+# Hide undocumented members
+HIDE_UNDOC_MEMBERS     = NO
+
+# Hide undocumented classes
+HIDE_UNDOC_CLASSES     = NO
+
+# Brief description as first line of documentation
+BRIEF_MEMBER_DESC      = YES
+
+# Repeat brief description in detailed section
+REPEAT_BRIEF           = YES
+
+# Generate documentation for inline members
+INLINE_INFO            = YES
+
+# Sort members alphabetically
+SORT_MEMBER_DOCS       = YES
+
+# Sort brief descriptions
+SORT_BRIEF_DOCS        = NO
+
+#---------------------------------------------------------------------------
+# Input related configuration options
+#---------------------------------------------------------------------------
+
+# Directories/files to process
+INPUT                  = app \
+                         scripts \
+                         run.py \
+                         README.md
+
+# File patterns to process
+FILE_PATTERNS          = *.py \
+                         *.md
+
+# Recursive directory search
+RECURSIVE              = YES
+
+# Patterns to exclude
+EXCLUDE_PATTERNS       = */tests/* \
+                         */__pycache__/* \
+                         */venv/* \
+                         */.venv/*
+
+# Use README.md as main page
+USE_MDFILE_AS_MAINPAGE = README.md
+
+#---------------------------------------------------------------------------
+# Source browsing options
+#---------------------------------------------------------------------------
+
+# Include source code in documentation
+SOURCE_BROWSER         = YES
+
+# Generate source code listings
+INLINE_SOURCES         = NO
+
+# Strip code comments from listings
+STRIP_CODE_COMMENTS    = YES
+
+# Reference source files from documentation
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+
+#---------------------------------------------------------------------------
+# Output format options
+#---------------------------------------------------------------------------
+
+# Generate HTML documentation
+GENERATE_HTML          = YES
+
+# HTML output directory (under OUTPUT_DIRECTORY)
+HTML_OUTPUT            = html
+
+# HTML file extension
+HTML_FILE_EXTENSION    = .html
+
+# Generate treeview navigation panel
+GENERATE_TREEVIEW      = YES
+
+# Use searchable index
+SEARCHENGINE           = YES
+
+# Generate LaTeX output (set to NO for faster builds)
+GENERATE_LATEX         = NO
+
+# Generate man pages
+GENERATE_MAN           = NO
+
+# Generate XML output (useful for other tools)
+GENERATE_XML           = NO
+
+#---------------------------------------------------------------------------
+# Preprocessor options
+#---------------------------------------------------------------------------
+
+# Enable preprocessing
+ENABLE_PREPROCESSING   = YES
+
+#---------------------------------------------------------------------------
+# External references options
+#---------------------------------------------------------------------------
+
+# Generate tag file for external projects to link to this documentation
+GENERATE_TAGFILE       = docs/library_app.tag
+
+#---------------------------------------------------------------------------
+# Diagram options
+#---------------------------------------------------------------------------
+
+# Generate class diagrams
+CLASS_DIAGRAMS         = NO
+
+# Use dot tool for diagrams (if Graphviz is installed)
+HAVE_DOT               = NO
+
+# Generate call graphs
+CALL_GRAPH             = NO
+
+# Generate caller graphs
+CALLER_GRAPH           = NO
+
+# Dot image format
+DOT_IMAGE_FORMAT       = svg
+
+# Interactive SVG diagrams
+INTERACTIVE_SVG        = YES
+
+# Limit graph depth
+MAX_DOT_GRAPH_DEPTH    = 3
+
+#---------------------------------------------------------------------------
+# Python-specific options
+#---------------------------------------------------------------------------
+
+# Optimize for Python output
+OPTIMIZE_OUTPUT_JAVA   = NO
+
+# Python docstring style
+PYTHON_DOCSTRING       = YES
+
+# Extract Python documentation
+BUILTIN_STL_SUPPORT    = YES
+
+#---------------------------------------------------------------------------
+# Warning and progress messages
+#---------------------------------------------------------------------------
+
+# Show warnings
+WARNINGS               = YES
+
+# Warn if undocumented
+WARN_IF_UNDOCUMENTED   = YES
+
+# Warn if documentation error
+WARN_IF_DOC_ERROR      = YES
+
+# Warn format
+WARN_FORMAT            = "$file:$line: $text"
+
+# Warning log file
+WARN_LOGFILE           = docs/doxygen_warnings.log
+
+#---------------------------------------------------------------------------
+# Alphabetical index options
+#---------------------------------------------------------------------------
+
+# Generate alphabetical index
+ALPHABETICAL_INDEX     = YES
