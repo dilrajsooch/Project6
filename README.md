@@ -93,24 +93,8 @@ docker-compose up --build
 # Install dependencies
 pip install -r requirements.txt
 
-# Import data
-python scripts/import_data.py --limit 10000
-
 # Run the application
 python run.py
-```
-
-### 4. Import Data
-
-```bash
-# Import 10,000 books (default)
-python scripts/import_data.py
-
-# Import custom number of books
-python scripts/import_data.py --limit 5000
-
-# Create sample users and checkouts
-python scripts/import_data.py --users 100 --checkouts 500
 ```
 
 ## Performance Testing Notes
