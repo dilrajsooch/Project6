@@ -99,11 +99,11 @@ http://localhost:5000/
 
 ```
 
-Requirements:
+#### Requirements:
 
--Docker Desktop installed and running
+- Docker Desktop installed and running
 
--Windows environment (for .bat script)
+- Windows environment (for .bat script)
 
 ### 3. Run Locally (Alternative)
 
