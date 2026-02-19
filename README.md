@@ -78,13 +78,13 @@ https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset
 
 Place `Books.csv` in the `data/` directory.
 
-### 2. Run with Docker (Recommended)
+### 2. Run with Docker (Recommended - Windows)
 
 ```bash
-# Build and run
-docker-compose up --build
+run.bat
 
-# Access the application at http://localhost:5000
+http://localhost:5000
+
 ```
 
 ### 3. Run Locally (Alternative)
