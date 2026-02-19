@@ -85,7 +85,7 @@ run.bat
 
 ```
 
-This script will:
+#### This script will:
 
 - Build Docker images
 
@@ -93,7 +93,7 @@ This script will:
 
 - Launch the application automatically
 
-### After startup, access the application at:
+#### After startup, access the application at:
 ```bash
 http://localhost:5000/
 
