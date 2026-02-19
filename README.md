@@ -87,13 +87,13 @@ run.bat
 
 This script will:
 
--Build Docker images
+- Build Docker images
 
--Start all required containers using docker-compose
+- Start all required containers using docker-compose
 
--Launch the application automatically
+- Launch the application automatically
 
-###After startup, access the application at:
+### After startup, access the application at:
 ```bash
 http://localhost:5000/
 
