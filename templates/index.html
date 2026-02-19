@@ -1,121 +1,335 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Management System</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LibraryHub - Library Management System</title>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <h1>📚 Library Management System</h1>
-            <div id="user-section">
-                <div id="login-form">
-                    <input type="text" id="username" placeholder="Username">
-                    <input type="password" id="password" placeholder="Password">
-                    <button onclick="login()">Login</button>
-                    <button onclick="register()">Register</button>
-                </div>
-                <div id="user-info" style="display: none;">
-                    <span id="welcome-msg"></span>
-                    <button onclick="logout()">Logout</button>
-                </div>
+
+  <!-- ===== HEADER / NAVIGATION ===== -->
+  <header id="main-header" role="banner">
+    <div class="header-container">
+      <a href="#" class="logo" onclick="app.navigateTo('home'); return false;" aria-label="LibraryHub Home">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span class="logo-text">LibraryHub</span>
+      </a>
+      <nav class="header-nav" role="navigation" aria-label="Main navigation">
+        <a href="#" id="nav-home" class="nav-link active" onclick="app.navigateTo('home'); return false;">Home</a>
+        <span id="nav-logged-in" class="nav-group" style="display:none;">
+          <a href="#" id="nav-account" class="nav-link" onclick="app.navigateTo('dashboard'); return false;">My Account</a>
+          <span class="nav-divider"></span>
+          <span id="nav-username" class="nav-user"></span>
+          <button id="btn-logout" class="btn-icon" onclick="app.logout()" aria-label="Log out" title="Log out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+        </span>
+        <span id="nav-logged-out">
+          <a href="#" id="nav-login" class="nav-link" onclick="app.navigateTo('auth'); return false;">Login</a>
+        </span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main id="main-content" role="main">
+
+    <!-- ===== HOMEPAGE VIEW ===== -->
+    <section id="homepage-view" class="view active" aria-label="Homepage">
+      <div class="container">
+
+        <!-- Search and Filters -->
+        <div class="search-panel" role="search" aria-label="Search and filter books">
+          <h1 class="section-title">Discover Books</h1>
+          <div class="search-row">
+            <div class="search-input-wrapper">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="search-input" class="search-input" placeholder="Search by title or author..." aria-label="Search books by title or author">
+              <button id="btn-search" class="btn btn-primary" onclick="app.searchBooks()">Search</button>
             </div>
+            <button class="btn btn-outline" onclick="app.clearFilters()">Clear Filters</button>
+          </div>
+          <div class="filter-row">
+            <div class="filter-group">
+              <label for="sort-select" class="filter-label">Sort By</label>
+              <select id="sort-select" class="filter-select" onchange="app.applyFilters()" aria-label="Sort books">
+                <option value="title">Title (A-Z)</option>
+                <option value="author">Author (A-Z)</option>
+                <option value="year-desc">Year (Newest)</option>
+                <option value="year-asc">Year (Oldest)</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="author-filter" class="filter-label">Author</label>
+              <select id="author-filter" class="filter-select" onchange="app.applyFilters()" aria-label="Filter by author">
+                <option value="all">All Authors</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="year-filter" class="filter-label">Year</label>
+              <select id="year-filter" class="filter-select" onchange="app.applyFilters()" aria-label="Filter by year">
+                <option value="all">All Years</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="genre-filter" class="filter-label">Genre</label>
+              <select id="genre-filter" class="filter-select" onchange="app.applyFilters()" aria-label="Filter by genre">
+                <option value="all">All Genres</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="availability-filter" class="filter-label">Availability</label>
+              <select id="availability-filter" class="filter-select" onchange="app.applyFilters()" aria-label="Filter by availability">
+                <option value="all">All Books</option>
+                <option value="available">Available Only</option>
+                <option value="checked-out">Checked Out Only</option>
+              </select>
+            </div>
+          </div>
         </div>
-    </header>
 
-    <main>
-        <!-- Search Section -->
-        <section class="search-section">
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search for books by title or author...">
-                <button onclick="searchBooks()">Search</button>
-            </div>
-            <div class="filters">
-                <select id="filter-author" onchange="applyFilters()">
-                    <option value="">All Authors</option>
-                </select>
-                <select id="filter-year" onchange="applyFilters()">
-                    <option value="">All Years</option>
-                </select>
-                <select id="filter-genre" onchange="applyFilters()">
-                    <option value="">All Genres</option>
-                </select>
-                <select id="filter-available" onchange="applyFilters()">
-                    <option value="">All Books</option>
-                    <option value="true">Available Only</option>
-                    <option value="false">Checked Out</option>
-                </select>
-                <select id="sort-by" onchange="applyFilters()">
-                    <option value="title">Sort by Title</option>
-                    <option value="author">Sort by Author</option>
-                    <option value="year">Sort by Year</option>
-                </select>
-            </div>
-        </section>
+        <!-- Trending Books -->
+        <div id="trending-section" class="books-section" style="display:none;">
+          <h2 class="section-title">Top 5 Trending Books</h2>
+          <div id="trending-grid" class="books-grid books-grid-5"></div>
+        </div>
 
-        <!-- Trending Books Section -->
-        <section class="trending-section">
-            <h2>🔥 Top 5 Trending Books</h2>
-            <div id="trending-books" class="book-grid">
-                <p>Loading trending books...</p>
-            </div>
-        </section>
+        <!-- Recommended Books -->
+        <div id="recommendations-section" class="books-section" style="display:none;">
+          <h2 class="section-title">Recommended For You</h2>
+          <p class="section-subtitle">Based on your recent reading history</p>
+          <div id="recommendations-grid" class="books-grid books-grid-5"></div>
+        </div>
 
-        <!-- Recommendations Section (shown when logged in) -->
-        <section id="recommendations-section" class="recommendations-section" style="display: none;">
-            <h2>📖 Recommended For You</h2>
-            
-            <div class="recommendation-group">
-                <h3>Based on Authors You've Read</h3>
-                <div id="rec-by-author" class="book-grid">
-                    <p>Loading...</p>
+        <!-- All Books -->
+        <div class="books-section">
+          <div class="section-header-row">
+            <h2 class="section-title">All Books (<span id="book-count">0</span>)</h2>
+          </div>
+          <div id="books-grid" class="books-grid"></div>
+          <div id="empty-state" class="empty-state" style="display:none;">
+            <p>No books found matching your criteria.</p>
+          </div>
+          <!-- Pagination -->
+          <div id="pagination" class="pagination" style="display:none;">
+            <button id="btn-prev" class="btn btn-outline btn-sm" onclick="app.prevPage()" disabled>Previous</button>
+            <span id="page-info" class="page-info"></span>
+            <button id="btn-next" class="btn btn-outline btn-sm" onclick="app.nextPage()">Next</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== BOOK DETAIL VIEW ===== -->
+    <section id="book-view" class="view" aria-label="Book details">
+      <div class="container">
+        <button class="btn btn-text" onclick="app.navigateTo('home')">
+          <svg class="btn-icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Back to Home
+        </button>
+
+        <div class="book-detail-layout">
+          <!-- Book Cover Column -->
+          <div class="book-detail-sidebar">
+            <div class="book-cover-large">
+              <img id="book-cover-img" src="" alt="" class="cover-image-large">
+            </div>
+            <div class="book-detail-actions">
+              <div class="book-status-row">
+                <span id="book-status-badge" class="badge badge-available">Available</span>
+                <span id="book-rating-display" class="rating-display"></span>
+              </div>
+              <div id="book-action-buttons"></div>
+              <div id="book-checkout-info" class="checkout-info" style="display:none;"></div>
+            </div>
+          </div>
+
+          <!-- Book Info Column -->
+          <div class="book-detail-main">
+            <div class="book-info-card">
+              <h1 id="book-title" class="book-detail-title"></h1>
+              <div class="book-meta-row">
+                <span class="meta-item">
+                  <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span id="book-author"></span>
+                </span>
+                <span class="meta-item">
+                  <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span id="book-year"></span>
+                </span>
+                <span id="book-genre-badge" class="badge badge-outline"></span>
+              </div>
+              <p id="book-isbn" class="book-isbn"></p>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="reviews-card">
+              <h2 id="reviews-heading" class="section-title">Reviews (0)</h2>
+
+              <!-- Write Review Form -->
+              <div id="review-form" class="review-form" style="display:none;">
+                <h3 class="form-heading">Write a Review</h3>
+                <div class="form-group">
+                  <label class="form-label">Rating (1-10)</label>
+                  <div id="rating-buttons" class="rating-buttons" role="radiogroup" aria-label="Select rating from 1 to 10"></div>
                 </div>
-            </div>
-
-            <div class="recommendation-group">
-                <h3>From Similar Years</h3>
-                <div id="rec-by-year" class="book-grid">
-                    <p>Loading...</p>
+                <div class="form-group">
+                  <label for="review-comment" class="form-label">Comment</label>
+                  <textarea id="review-comment" class="form-textarea" rows="4" placeholder="Share your thoughts about this book..."></textarea>
                 </div>
-            </div>
-
-            <div class="recommendation-group">
-                <h3>Readers Like You Also Enjoyed</h3>
-                <div id="rec-similar-users" class="book-grid">
-                    <p>Loading...</p>
+                <div class="form-group">
+                  <label class="form-label">Upload Image (Optional)</label>
+                  <div id="review-image-area" class="image-upload-area">
+                    <label class="image-upload-label" for="review-image-input">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      <span>Upload</span>
+                    </label>
+                    <input type="file" id="review-image-input" accept="image/*" class="visually-hidden" onchange="app.handleReviewImage(event)">
+                  </div>
                 </div>
-            </div>
-        </section>
+                <button class="btn btn-primary" onclick="app.submitReview()">Submit Review</button>
+              </div>
 
-        <!-- Search Results / All Books Section -->
-        <section class="books-section">
-            <h2>📚 Browse Books</h2>
-            <div id="books-list" class="book-grid">
-                <p>Loading books...</p>
+              <!-- Reviews List -->
+              <div id="reviews-list" class="reviews-list"></div>
             </div>
-            <div class="pagination">
-                <button id="prev-btn" onclick="prevPage()" disabled>Previous</button>
-                <span id="page-info">Page 1</span>
-                <button id="next-btn" onclick="nextPage()">Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== AUTH VIEW (Login/Register) ===== -->
+    <section id="auth-view" class="view" aria-label="Login or Register">
+      <div class="container container-narrow">
+        <div class="auth-card">
+          <h1 class="auth-title">Welcome to LibraryHub</h1>
+          <div class="tab-nav" role="tablist">
+            <button class="tab-btn active" data-tab="login" role="tab" aria-selected="true" onclick="app.switchAuthTab('login')">Login</button>
+            <button class="tab-btn" data-tab="register" role="tab" aria-selected="false" onclick="app.switchAuthTab('register')">Register</button>
+          </div>
+
+          <!-- Login Form -->
+          <div id="login-panel" class="tab-panel active" role="tabpanel">
+            <div class="form-group">
+              <label for="login-username" class="form-label">Username</label>
+              <input type="text" id="login-username" class="form-input" placeholder="Enter your username">
             </div>
-        </section>
-
-        <!-- User Checkouts Section -->
-        <section id="my-checkouts-section" class="checkouts-section" style="display: none;">
-            <h2>📋 My Current Checkouts</h2>
-            <div id="my-checkouts" class="book-grid">
-                <p>No active checkouts</p>
+            <div class="form-group">
+              <label for="login-password" class="form-label">Password</label>
+              <input type="password" id="login-password" class="form-input" placeholder="Enter your password">
             </div>
-        </section>
-    </main>
+            <button class="btn btn-primary btn-full" onclick="app.logIn()">Login</button>
+          </div>
 
-    <footer>
-        <p>Library Management System - CSCN73060 Web Project</p>
-        <p id="load-time"></p>
-    </footer>
+          <!-- Register Form -->
+          <div id="register-panel" class="tab-panel" role="tabpanel">
+            <div class="form-group">
+              <label for="register-username" class="form-label">Username</label>
+              <input type="text" id="register-username" class="form-input" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+              <label for="register-password" class="form-label">Password</label>
+              <input type="password" id="register-password" class="form-input" placeholder="Choose a password">
+            </div>
+            <button class="btn btn-primary btn-full" onclick="app.register()">Create Account</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <script src="/static/js/app.js"></script>
+    <!-- ===== USER DASHBOARD VIEW ===== -->
+    <section id="dashboard-view" class="view" aria-label="User Dashboard">
+      <div class="container">
+
+        <!-- User Profile Header -->
+        <div class="profile-card">
+          <div class="profile-header">
+            <div id="profile-avatar" class="profile-avatar" aria-hidden="true"></div>
+            <div class="profile-info">
+              <h1 id="profile-username" class="profile-name"></h1>
+              <p id="profile-joined" class="profile-date"></p>
+            </div>
+          </div>
+          <div class="profile-stats">
+            <div class="stat-item">
+              <span id="stat-reading" class="stat-number">0</span>
+              <span class="stat-label">Currently Reading</span>
+            </div>
+            <div class="stat-item">
+              <span id="stat-total" class="stat-number">0</span>
+              <span class="stat-label">Total Books Read</span>
+            </div>
+            <div class="stat-item">
+              <span id="stat-reviews" class="stat-number">0</span>
+              <span class="stat-label">Reviews Written</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Tabs -->
+        <div class="dashboard-tabs">
+          <div class="tab-nav" role="tablist">
+            <button class="tab-btn active" data-tab="current" role="tab" onclick="app.switchDashboardTab('current')">Currently Reading</button>
+            <button class="tab-btn" data-tab="history" role="tab" onclick="app.switchDashboardTab('history')">Reading History</button>
+            <button class="tab-btn" data-tab="my-reviews" role="tab" onclick="app.switchDashboardTab('my-reviews')">My Reviews</button>
+          </div>
+
+          <div id="tab-current" class="tab-panel active" role="tabpanel">
+            <h2 class="section-title">Currently Reading</h2>
+            <div id="current-books-grid" class="books-grid books-grid-3"></div>
+            <div id="current-empty" class="empty-state" style="display:none;">
+              <p>You haven't checked out any books yet.</p>
+              <button class="btn btn-primary" onclick="app.navigateTo('home')">Browse Books</button>
+            </div>
+          </div>
+
+          <div id="tab-history" class="tab-panel" role="tabpanel">
+            <h2 class="section-title">Reading History</h2>
+            <div id="history-list" class="history-list"></div>
+            <div id="history-empty" class="empty-state" style="display:none;">
+              <p>No reading history yet.</p>
+            </div>
+          </div>
+
+          <div id="tab-my-reviews" class="tab-panel" role="tabpanel">
+            <h2 class="section-title">My Reviews</h2>
+            <div id="my-reviews-list" class="reviews-list"></div>
+            <div id="my-reviews-empty" class="empty-state" style="display:none;">
+              <p>You haven't written any reviews yet.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== TOAST NOTIFICATIONS ===== -->
+  <div id="toast-container" class="toast-container" aria-live="polite" role="status"></div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p>LibraryHub - Library Management System</p>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
 </body>
 </html>
