@@ -78,14 +78,32 @@ https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset
 
 Place `Books.csv` in the `data/` directory.
 
-### 2. Run with Docker (Recommended)
+### 2. Run with Docker (Recommended - Windows)
 
 ```bash
-# Build and run
-docker-compose up --build
+run.bat
 
-# Access the application at http://localhost:5000
 ```
+
+#### This script will:
+
+- Build Docker images
+
+- Start all required containers using docker-compose
+
+- Launch the application automatically
+
+#### After startup, access the application at:
+```bash
+http://localhost:5000/
+
+```
+
+#### Requirements:
+
+- Docker Desktop installed and running
+
+- Windows environment (for .bat script)
 
 ### 3. Run Locally (Alternative)
 
@@ -135,10 +153,10 @@ Key endpoints to test:
 
 ## Team Members
 
-- [Team Member 1]
-- [Team Member 2]
-- [Team Member 3]
-- [Team Member 4]
+- [Brian Nguyen]
+- [Owen Davis]
+- [Dilraj Sooch]
+- [Kahlib Stewart]
 
 ## Documentation
 
