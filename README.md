@@ -83,9 +83,27 @@ Place `Books.csv` in the `data/` directory.
 ```bash
 run.bat
 
-http://localhost:5000
+```
+
+This script will:
+
+-Build Docker images
+
+-Start all required containers using docker-compose
+
+-Launch the application automatically
+
+###After startup, access the application at:
+```bash
+http://localhost:5000/
 
 ```
+
+Requirements:
+
+-Docker Desktop installed and running
+
+-Windows environment (for .bat script)
 
 ### 3. Run Locally (Alternative)
 
