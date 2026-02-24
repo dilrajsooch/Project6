@@ -163,6 +163,18 @@ const app = {
     this.loadTrendingBooks();
     this.loadRecommendations();
 
+    // Set initial history state so the back button can return to home
+    history.replaceState({ viewName: "home", params: {} }, "", window.location.pathname);
+
+    // Handle browser back/forward buttons
+    window.addEventListener("popstate", (event) => {
+      if (event.state) {
+        this.navigateTo(event.state.viewName, event.state.params || {}, true);
+      } else {
+        this.navigateTo("home", {}, true);
+      }
+    });
+
     // Bind Enter key for search
     const searchInput = document.getElementById("search-input");
     if (searchInput) {
@@ -189,7 +201,7 @@ const app = {
    * @param {string} viewName - "home", "book", "auth", "dashboard"
    * @param {object} params - Optional parameters (e.g., bookId)
    */
-  navigateTo(viewName, params = {}) {
+  navigateTo(viewName, params = {}, fromPopState = false) {
     // Hide all views
     document.querySelectorAll(".view").forEach((v) => (v.style.display = "none"));
     document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
@@ -217,7 +229,7 @@ const app = {
 
       case "auth":
         if (this.currentUser) {
-          this.navigateTo("dashboard");
+          this.navigateTo("dashboard", {}, fromPopState);
           return;
         }
         document.getElementById("auth-view").style.display = "block";
@@ -227,7 +239,7 @@ const app = {
 
       case "dashboard":
         if (!this.currentUser) {
-          this.navigateTo("auth");
+          this.navigateTo("auth", {}, fromPopState);
           return;
         }
         document.getElementById("dashboard-view").style.display = "block";
@@ -235,6 +247,15 @@ const app = {
         document.getElementById("nav-account")?.classList.add("active");
         this.loadDashboard();
         break;
+    }
+
+    // Push browser history state (skip when triggered by popstate itself)
+    if (!fromPopState) {
+      let url = window.location.pathname;
+      if (viewName === "book" && params.bookId) url = `#book-${params.bookId}`;
+      else if (viewName === "auth") url = "#auth";
+      else if (viewName === "dashboard") url = "#dashboard";
+      history.pushState({ viewName, params }, "", url);
     }
 
     // Scroll to top
