@@ -88,7 +88,7 @@
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
-          <stringProp name="HTTPSampler.path">/api/books?search=the
+          <stringProp name="HTTPSampler.path">/api/books?search=the</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -268,12 +268,14 @@
             <intProp name="Assertion.test_type">8</intProp>
           </ResponseAssertion>
           <hashTree/>
-          <JSONPathExtractor guiclass="JSONPathExtractorGui" testclass="JSONPathExtractor" testname="Extract User ID" enabled="true">
-            <stringProp name="JSONPathExtractor.referenceNames">jmeter_user_id</stringProp>
-            <stringProp name="JSONPathExtractor.jsonPathExprs">$.user_id</stringProp>
-            <stringProp name="JSONPathExtractor.defaultValues">-1</stringProp>
-            <stringProp name="JSONPathExtractor.match_numbers">0</stringProp>
-          </JSONPathExtractor>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract User ID" enabled="true">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">jmeter_user_id</stringProp>
+            <stringProp name="RegexExtractor.regex">&quot;user_id&quot;:\s*(\d+)</stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default">-1</stringProp>
+            <stringProp name="RegexExtractor.match_number">1</stringProp>
+          </RegexExtractor>
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login User">
@@ -337,12 +339,14 @@
             <intProp name="Assertion.test_type">8</intProp>
           </ResponseAssertion>
           <hashTree/>
-          <JSONPathExtractor guiclass="JSONPathExtractorGui" testclass="JSONPathExtractor" testname="Extract Checkout ID" enabled="true">
-            <stringProp name="JSONPathExtractor.referenceNames">checkout_id</stringProp>
-            <stringProp name="JSONPathExtractor.jsonPathExprs">$.checkout_id</stringProp>
-            <stringProp name="JSONPathExtractor.defaultValues">-1</stringProp>
-            <stringProp name="JSONPathExtractor.match_numbers">0</stringProp>
-          </JSONPathExtractor>
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Checkout ID" enabled="true">
+            <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+            <stringProp name="RegexExtractor.refname">checkout_id</stringProp>
+            <stringProp name="RegexExtractor.regex">&quot;checkout_id&quot;:\s*(\d+)</stringProp>
+            <stringProp name="RegexExtractor.template">$1$</stringProp>
+            <stringProp name="RegexExtractor.default">-1</stringProp>
+            <stringProp name="RegexExtractor.match_number">1</stringProp>
+          </RegexExtractor>
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Submit Review">
