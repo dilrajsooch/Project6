@@ -17,6 +17,8 @@ def get_db_connection():
     """
     conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row
+    conn.execute('PRAGMA journal_mode=WAL')
+    conn.execute('PRAGMA busy_timeout=10000')
     return conn
 
 
@@ -88,9 +90,12 @@ def init_db():
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_books_author ON books(author)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_books_year ON books(year_published)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_books_genre ON books(genre)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_books_title ON books(title)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_checkouts_user ON checkouts(user_id)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_checkouts_book ON checkouts(book_id)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_checkouts_date ON checkouts(checkout_date)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_reviews_user ON reviews(user_id)')
     
     conn.commit()
     conn.close()
