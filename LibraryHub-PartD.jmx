@@ -5,14 +5,14 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
         <intProp name="ThreadGroup.num_threads">20</intProp>
         <intProp name="ThreadGroup.ramp_time">30</intProp>
+        <longProp name="ThreadGroup.duration">21600</longProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
           <stringProp name="LoopController.loops">800</stringProp>
@@ -59,7 +59,7 @@
           </ResponseAssertion>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get All Books" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get All Books">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -88,7 +88,7 @@
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
-          <stringProp name="HTTPSampler.path">/api/books?search=pokemon</stringProp>
+          <stringProp name="HTTPSampler.path">/api/books?search=the
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -98,7 +98,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Book Filters" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Book Filters">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -112,7 +112,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="View Book Detail" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="View Book Detail">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -126,7 +126,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Trending Books" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Trending Books">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -140,7 +140,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Recommendations" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Recommendations">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -154,7 +154,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get User Profile" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get User Profile">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -168,7 +168,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get All Checkouts" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get All Checkouts">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -182,7 +182,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get User Checkout History" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get User Checkout History">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -196,7 +196,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Specific Checkout" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Specific Checkout">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -210,7 +210,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Reviews for Book" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Reviews for Book">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -224,7 +224,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Options for Books Resource" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Options for Books Resource">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -238,7 +238,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register New User" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Register New User">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -251,7 +251,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&quot;username&quot;: &quot;jmeter_perf_test&quot;, &quot;password&quot;: &quot;test123&quot;}</stringProp>
+                <stringProp name="Argument.value">{&quot;username&quot;: &quot;jmeter_user_${__threadNum}&quot;, &quot;password&quot;: &quot;test123&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -268,8 +268,15 @@
             <intProp name="Assertion.test_type">8</intProp>
           </ResponseAssertion>
           <hashTree/>
+          <JSONPathExtractor guiclass="JSONPathExtractorGui" testclass="JSONPathExtractor" testname="Extract User ID" enabled="true">
+            <stringProp name="JSONPathExtractor.referenceNames">jmeter_user_id</stringProp>
+            <stringProp name="JSONPathExtractor.jsonPathExprs">$.user_id</stringProp>
+            <stringProp name="JSONPathExtractor.defaultValues">-1</stringProp>
+            <stringProp name="JSONPathExtractor.match_numbers">0</stringProp>
+          </JSONPathExtractor>
+          <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login User" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Login User">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -282,7 +289,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&quot;username&quot;: &quot;dilrajsooch&quot;, &quot;password&quot;: &quot;password&quot;}</stringProp>
+                <stringProp name="Argument.value">{&quot;username&quot;: &quot;jmeter_user_${__threadNum}&quot;, &quot;password&quot;: &quot;test123&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -300,7 +307,7 @@
           </ResponseAssertion>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Checkout Book" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Checkout Book">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -313,7 +320,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&quot;book_id&quot;: 5000, &quot;user_id&quot;: 1}</stringProp>
+                <stringProp name="Argument.value">{&quot;book_id&quot;: 5000, &quot;user_id&quot;: ${jmeter_user_id}}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -330,8 +337,15 @@
             <intProp name="Assertion.test_type">8</intProp>
           </ResponseAssertion>
           <hashTree/>
+          <JSONPathExtractor guiclass="JSONPathExtractorGui" testclass="JSONPathExtractor" testname="Extract Checkout ID" enabled="true">
+            <stringProp name="JSONPathExtractor.referenceNames">checkout_id</stringProp>
+            <stringProp name="JSONPathExtractor.jsonPathExprs">$.checkout_id</stringProp>
+            <stringProp name="JSONPathExtractor.defaultValues">-1</stringProp>
+            <stringProp name="JSONPathExtractor.match_numbers">0</stringProp>
+          </JSONPathExtractor>
+          <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Submit Review" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Submit Review">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -362,11 +376,11 @@
           </ResponseAssertion>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Update User Profile" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Update User Profile">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
-          <stringProp name="HTTPSampler.path">/api/users/1</stringProp>
+          <stringProp name="HTTPSampler.path">/api/users/${jmeter_user_id}</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">PUT</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -375,14 +389,14 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&quot;username&quot;: &quot;dilrajsooch&quot;, &quot;password&quot;: &quot;password&quot;}</stringProp>
+                <stringProp name="Argument.value">{&quot;username&quot;: &quot;jmeter_user_${__threadNum}&quot;, &quot;password&quot;: &quot;test123&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patch Book Availability" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Patch Book Availability">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -402,11 +416,11 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Return Book" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Return Book">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
-          <stringProp name="HTTPSampler.path">/api/checkouts/27</stringProp>
+          <stringProp name="HTTPSampler.path">/api/checkouts/${checkout_id}</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">DELETE</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -416,11 +430,11 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Delete Test User" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Delete Test User">
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
           <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
-          <stringProp name="HTTPSampler.path">/api/users/5</stringProp>
+          <stringProp name="HTTPSampler.path">/api/users/${jmeter_user_id}</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">DELETE</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -430,7 +444,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
