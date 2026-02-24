@@ -135,7 +135,6 @@ def return_book(checkout_id):
         'return_date': return_date
     }), 200
 
-
 @checkouts_bp.route('', methods=['GET'])
 def get_checkouts():
     """
