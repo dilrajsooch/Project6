@@ -276,6 +276,8 @@ const app = {
       this.updateLoginState();
       this.showToast(`Welcome back, ${result.username}!`, "success");
       this.navigateTo("home");
+      this.loadBooks();
+      this.loadTrendingBooks();
       this.loadRecommendations();
     } else {
       this.showToast("Invalid username or password.", "error");
@@ -313,6 +315,9 @@ const app = {
       this.updateLoginState();
       this.showToast(`Account created! Welcome, ${result.username}!`, "success");
       this.navigateTo("home");
+      this.loadBooks();
+      this.loadTrendingBooks();
+      this.loadRecommendations();
     } else {
       this.showToast("Username already exists or registration failed.", "error");
     }
@@ -327,7 +332,8 @@ const app = {
     this.updateLoginState();
     this.showToast("You have been logged out.", "info");
     this.navigateTo("home");
-    // Hide recommendations
+    this.loadBooks();
+    this.loadTrendingBooks();
     document.getElementById("recommendations-section").style.display = "none";
   },
 
