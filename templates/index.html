@@ -287,6 +287,7 @@
             <button class="tab-btn active" data-tab="current" role="tab" onclick="app.switchDashboardTab('current')">Currently Reading</button>
             <button class="tab-btn" data-tab="history" role="tab" onclick="app.switchDashboardTab('history')">Reading History</button>
             <button class="tab-btn" data-tab="my-reviews" role="tab" onclick="app.switchDashboardTab('my-reviews')">My Reviews</button>
+            <button class="tab-btn" data-tab="edit-profile" role="tab" onclick="app.switchDashboardTab('edit-profile')">Edit Profile</button>
           </div>
 
           <div id="tab-current" class="tab-panel active" role="tabpanel">
@@ -311,6 +312,21 @@
             <div id="my-reviews-list" class="reviews-list"></div>
             <div id="my-reviews-empty" class="empty-state" style="display:none;">
               <p>You haven't written any reviews yet.</p>
+            </div>
+          </div>
+
+          <div id="tab-edit-profile" class="tab-panel" role="tabpanel">
+            <h2 class="section-title">Edit Profile</h2>
+            <div class="auth-card" style="max-width:420px;">
+              <div class="form-group">
+                <label for="edit-username" class="form-label">New Username</label>
+                <input type="text" id="edit-username" class="form-input" placeholder="Enter new username">
+              </div>
+              <div class="form-group">
+                <label for="edit-password" class="form-label">New Password</label>
+                <input type="password" id="edit-password" class="form-input" placeholder="Enter new password">
+              </div>
+              <button class="btn btn-primary" onclick="app.updateProfile()">Save Changes</button>
             </div>
           </div>
         </div>

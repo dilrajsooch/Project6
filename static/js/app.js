@@ -405,6 +405,35 @@ const app = {
     });
   },
 
+  /**
+   * Update the logged-in user's username and password.
+   * PUT /api/users/<user_id>
+   */
+  async updateProfile() {
+    if (!this.currentUser) return;
+    const username = document.getElementById("edit-username").value.trim();
+    const password = document.getElementById("edit-password").value.trim();
+    if (!username || !password) {
+      this.showToast("Please fill in both fields.", "error");
+      return;
+    }
+    const result = await apiRequest(`/users/${this.currentUser.user_id}`, {
+      method: "PUT",
+      body: JSON.stringify({ username, password }),
+    });
+    if (result && result.user_id) {
+      this.currentUser.username = result.username;
+      localStorage.setItem("savedUser", JSON.stringify(this.currentUser));
+      document.getElementById("profile-username").textContent = result.username;
+      document.getElementById("nav-username").textContent = result.username;
+      document.getElementById("edit-username").value = "";
+      document.getElementById("edit-password").value = "";
+      this.showToast("Profile updated successfully!", "success");
+    } else {
+      this.showToast("Failed to update profile.", "error");
+    }
+  },
+
   /* ------------------------------------------
      LOAD BOOKS
      ------------------------------------------ */
@@ -857,6 +886,9 @@ const app = {
   async loadBookDetail(bookId) {
     let book = null;
 
+    // OPTIONS call — RESTful API discovery: find out what methods this resource supports
+    fetch(`${API_BASE}/books/${bookId}`, { method: "OPTIONS" }).catch(() => {});
+
     const result = await apiRequest(`/books/${bookId}`);
     if (result && result.book_id) {
       book = result;
@@ -1043,6 +1075,11 @@ const app = {
     if (checkoutId) {
       const result = await apiRequest(`/checkouts/${checkoutId}`, { method: "DELETE" });
       if (result && result.message) {
+        // PATCH the book to explicitly mark it as available
+        await apiRequest(`/books/${bookId}`, {
+          method: "PATCH",
+          body: JSON.stringify({ is_booked: 0, booked_by_user_id: null, due_date: null }),
+        });
         this.showToast("Book returned successfully!", "success");
         return true;
       } else {
