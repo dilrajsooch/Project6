@@ -78,6 +78,7 @@ def init_db():
             rating INTEGER CHECK(rating >= 0 AND rating <= 10),
             comment TEXT,
             image BLOB,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (book_id) REFERENCES books(book_id),
             FOREIGN KEY (user_id) REFERENCES users(user_id)
         )

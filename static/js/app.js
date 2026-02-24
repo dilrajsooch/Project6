@@ -779,7 +779,10 @@ const app = {
    */
   createBookCard(book, reason) {
     const isCheckedOut = book.is_booked == 1;
-    const statusBadge = isCheckedOut
+    const isMyBook = isCheckedOut && this.currentUser && book.booked_by_user_id === this.currentUser.user_id;
+    const statusBadge = isMyBook
+      ? '<span class="badge badge-my-book">Your Book</span>'
+      : isCheckedOut
       ? '<span class="badge badge-checked-out">Checked Out</span>'
       : "";
     const reasonHtml = reason
@@ -820,16 +823,19 @@ const app = {
     const author = checkout.author || "";
     const imageUrl = checkout.image_url || "/static/images/no-cover.svg";
     const bookId = checkout.book_id;
+    const checkoutDate = checkout.checkout_date ? checkout.checkout_date.split(' ')[0] : "";
+    const dueDate = checkout.due_date ? checkout.due_date.split(' ')[0] : "";
     return `
-      <div class="checkout-card" onclick="app.navigateTo('book', { bookId: ${bookId} })">
-        <div class="checkout-card-cover">
+      <div class="checkout-card">
+        <div class="checkout-card-cover" onclick="app.navigateTo('book', { bookId: ${bookId} })" style="cursor:pointer;">
           <img src="${this.escapeHtml(imageUrl)}" alt="Cover of ${this.escapeHtml(title)}" onerror="this.src='/static/images/no-cover.svg'">
         </div>
         <div class="checkout-card-body">
-          <h3 class="checkout-card-title">${this.escapeHtml(title)}</h3>
+          <h3 class="checkout-card-title" onclick="app.navigateTo('book', { bookId: ${bookId} })" style="cursor:pointer;">${this.escapeHtml(title)}</h3>
           <p class="checkout-card-author">${this.escapeHtml(author)}</p>
-          <p class="checkout-card-date">Checked out: ${checkout.checkout_date || ""}</p>
-          ${checkout.due_date ? `<p class="checkout-card-date">Due: ${checkout.due_date}</p>` : ""}
+          <p class="checkout-card-date">Checked out: ${checkoutDate}</p>
+          ${dueDate ? `<p class="checkout-card-date">Due: ${dueDate}</p>` : ""}
+          <button class="btn btn-outline btn-sm" style="margin-top:0.5rem;width:100%;" onclick="app.returnBookFromDashboard(${bookId})">Return Book</button>
         </div>
       </div>
     `;
@@ -984,7 +990,7 @@ const app = {
   },
 
   /**
-   * Return a book.
+   * Return a book from the book detail view.
    * DELETE /api/checkouts/{checkout_id}
    * @param {number} bookId
    * @returns {Promise<void>}
@@ -992,21 +998,54 @@ const app = {
   async returnBook(bookId) {
     if (!this.currentUser) return;
 
-    // Find the checkout for this book by the current user
+    const success = await this._doReturn(bookId);
+    if (success) {
+      this.loadBookDetail(bookId);
+      this.loadBooks();
+      this.loadTrendingBooks();
+      this.loadRecommendations();
+    }
+  },
+
+  /**
+   * Return a book from the dashboard Currently Reading tab.
+   * @param {number} bookId
+   * @returns {Promise<void>}
+   */
+  async returnBookFromDashboard(bookId) {
+    if (!this.currentUser) return;
+
+    const success = await this._doReturn(bookId);
+    if (success) {
+      this.loadDashboard();
+      this.loadBooks();
+      this.loadTrendingBooks();
+    }
+  },
+
+  /**
+   * Core return logic shared by returnBook and returnBookFromDashboard.
+   * @param {number} bookId
+   * @returns {Promise<boolean>} true if return succeeded
+   */
+  async _doReturn(bookId) {
     let checkoutId = null;
 
-    // Try API first - find active checkout for this book by current user
     const checkoutsResult = await apiRequest(`/checkouts?user_id=${this.currentUser.user_id}&active=true`);
     if (checkoutsResult && checkoutsResult.checkouts) {
-      const checkout = checkoutsResult.checkouts.find(
-        (c) => c.book_id === bookId
-      );
+      const checkout = checkoutsResult.checkouts.find((c) => c.book_id === bookId);
       if (checkout) checkoutId = checkout.checkout_id;
     }
 
     if (checkoutId) {
-      await apiRequest(`/checkouts/${checkoutId}`, { method: "DELETE" });
-      this.showToast("Book returned successfully!", "success");
+      const result = await apiRequest(`/checkouts/${checkoutId}`, { method: "DELETE" });
+      if (result && result.message) {
+        this.showToast("Book returned successfully!", "success");
+        return true;
+      } else {
+        this.showToast("Failed to return the book. Please try again.", "error");
+        return false;
+      }
     } else {
       // Mock fallback
       const book = MOCK_BOOKS.find((b) => b.book_id === bookId);
@@ -1015,7 +1054,6 @@ const app = {
         book.booked_by_user_id = null;
         book.due_date = null;
       }
-
       const checkout = MOCK_CHECKOUTS.find(
         (c) => c.book_id === bookId && c.user_id === this.currentUser.user_id && !c.is_returned
       );
@@ -1023,15 +1061,9 @@ const app = {
         checkout.is_returned = 1;
         checkout.return_date = new Date().toISOString().split("T")[0];
       }
-
       this.showToast("Book returned successfully!", "success");
+      return true;
     }
-
-    // Refresh views
-    this.loadBookDetail(bookId);
-    this.loadBooks();
-    this.loadTrendingBooks();
-    this.loadRecommendations();
   },
 
   /* ------------------------------------------
@@ -1046,13 +1078,12 @@ const app = {
   async loadBookReviews(bookId) {
     let reviews = [];
 
-    // NOTE: Review endpoints not yet implemented in backend.
-    // When added, uncomment the API call below:
-    // const result = await apiRequest(`/books/${bookId}/reviews`);
-    // if (result && Array.isArray(result)) { reviews = result; }
-
-    // Use mock data (or localStorage reviews)
-    reviews = MOCK_REVIEWS.filter((r) => r.book_id === bookId);
+    const result = await apiRequest(`/reviews?book_id=${bookId}`);
+    if (result && Array.isArray(result)) {
+      reviews = result;
+    } else {
+      reviews = MOCK_REVIEWS.filter((r) => r.book_id === bookId);
+    }
 
     // Update heading
     document.getElementById("reviews-heading").textContent = `Reviews (${reviews.length})`;
@@ -1189,26 +1220,17 @@ const app = {
       image: this.reviewImageData || null,
     };
 
-    // NOTE: Review POST endpoint not yet implemented in backend.
-    // When added, uncomment the API call below:
-    // const result = await apiRequest(`/reviews`, {
-    //   method: "POST",
-    //   body: JSON.stringify(reviewData),
-    // });
-
-    // Mock fallback - store in local mock array
-    MOCK_REVIEWS.push({
-      review_id: Date.now(),
-      book_id: this.currentBookId,
-      user_id: this.currentUser.user_id,
-      username: this.currentUser.username,
-      rating: this.selectedRating,
-      comment: comment,
-      image: this.reviewImageData || null,
-      created_at: new Date().toISOString().split("T")[0],
+    const result = await apiRequest(`/reviews`, {
+      method: "POST",
+      body: JSON.stringify(reviewData),
     });
 
-    this.showToast("Review submitted successfully!", "success");
+    if (result && result.review_id) {
+      this.showToast("Review submitted successfully!", "success");
+    } else {
+      this.showToast("Failed to submit review.", "error");
+      return;
+    }
 
     // Reset form
     document.getElementById("review-comment").value = "";
@@ -1230,6 +1252,14 @@ const app = {
    */
   async loadDashboard() {
     if (!this.currentUser) return;
+
+    // Clear stale content immediately so previous user's data never shows
+    document.getElementById("current-books-grid").innerHTML = "";
+    document.getElementById("history-list").innerHTML = "";
+    document.getElementById("my-reviews-list").innerHTML = "";
+    document.getElementById("stat-reading").textContent = "0";
+    document.getElementById("stat-total").textContent = "0";
+    document.getElementById("stat-reviews").textContent = "0";
 
     const userId = this.currentUser.user_id;
 
@@ -1253,16 +1283,17 @@ const app = {
     const pastCheckouts = checkouts.filter((c) => c.is_returned);
 
     // Load user reviews
-    // NOTE: No user reviews endpoint in backend yet. Using mock data.
     let userReviews = [];
-    // When backend adds GET /api/reviews?user_id=<id>, uncomment:
-    // const reviewsResult = await apiRequest(`/reviews?user_id=${userId}`);
-    // if (reviewsResult && Array.isArray(reviewsResult)) { userReviews = reviewsResult; }
-    userReviews = MOCK_REVIEWS.filter((r) => r.user_id === userId);
+    const reviewsResult = await apiRequest(`/reviews?user_id=${userId}`);
+    if (reviewsResult && Array.isArray(reviewsResult)) {
+      userReviews = reviewsResult;
+    } else {
+      userReviews = MOCK_REVIEWS.filter((r) => r.user_id === userId);
+    }
 
     // Stats
     document.getElementById("stat-reading").textContent = currentCheckouts.length;
-    document.getElementById("stat-total").textContent = checkouts.length;
+    document.getElementById("stat-total").textContent = pastCheckouts.length;
     document.getElementById("stat-reviews").textContent = userReviews.length;
 
     // Current reading
@@ -1311,29 +1342,25 @@ const app = {
     const myReviewsList = document.getElementById("my-reviews-list");
     const myReviewsEmpty = document.getElementById("my-reviews-empty");
     if (userReviews.length > 0) {
-      // Reviews are mock-only; look up book data from mock
-      userReviews.forEach((r) => {
-        if (!r._book) {
-          r._book = MOCK_BOOKS.find((b) => b.book_id === r.book_id) || {};
-        }
-      });
-
       myReviewsList.innerHTML = userReviews
         .map((review) => {
-          const book = review._book || {};
+          const bookTitle = review.title || (review._book && review._book.title) || "Unknown";
+          const bookAuthor = review.author || (review._book && review._book.author) || "";
+          const bookImageUrl = review.image_url || (review._book && review._book.image_url) || "/static/images/no-cover.svg";
+          const bookId = review.book_id;
           const imageHtml = review.image
             ? `<img src="${this.escapeHtml(review.image)}" alt="Review image" class="review-image">`
             : "";
           return `
             <div class="review-item">
               <div class="review-header">
-                <div class="review-user" style="cursor:pointer" onclick="app.navigateTo('book', { bookId: ${book.book_id} })">
+                <div class="review-user" style="cursor:pointer" onclick="app.navigateTo('book', { bookId: ${bookId} })">
                   <div class="history-cover" style="width:50px;height:70px;">
-                    <img src="${this.escapeHtml(book.image_url || "/static/images/no-cover.svg")}" alt="${this.escapeHtml(book.title || "")}" onerror="this.src='/static/images/no-cover.svg'">
+                    <img src="${this.escapeHtml(bookImageUrl)}" alt="${this.escapeHtml(bookTitle)}" onerror="this.src='/static/images/no-cover.svg'">
                   </div>
                   <div>
-                    <p class="review-username">${this.escapeHtml(book.title || "Unknown")}</p>
-                    <p class="review-date">${this.escapeHtml(book.author || "")}</p>
+                    <p class="review-username">${this.escapeHtml(bookTitle)}</p>
+                    <p class="review-date">${this.escapeHtml(bookAuthor)}</p>
                   </div>
                 </div>
                 <span class="badge badge-accent">${review.rating}/10</span>
