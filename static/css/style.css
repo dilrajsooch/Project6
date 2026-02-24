@@ -334,6 +334,11 @@ main {
   color: var(--color-danger);
 }
 
+.badge-my-book {
+  background-color: #e8f4fd;
+  color: #1a73e8;
+}
+
 .badge-outline {
   background: transparent;
   border: 1px solid var(--color-border);
@@ -1114,7 +1119,7 @@ main {
 }
 
 .checkout-card-cover {
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 2 / 3;
   background: var(--color-surface-alt);
   overflow: hidden;
 }

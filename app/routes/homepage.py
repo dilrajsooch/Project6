@@ -58,8 +58,7 @@ def get_trending_books():
     cursor.execute('''
         SELECT b.*, COUNT(c.checkout_id) as checkout_count
         FROM books b
-        LEFT JOIN checkouts c ON b.book_id = c.book_id
-        WHERE c.checkout_date >= ? OR c.checkout_date IS NULL
+        LEFT JOIN checkouts c ON b.book_id = c.book_id AND c.checkout_date >= ?
         GROUP BY b.book_id
         ORDER BY checkout_count DESC
         LIMIT 5

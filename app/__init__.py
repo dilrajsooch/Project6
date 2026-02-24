@@ -35,10 +35,12 @@ def create_app():
     from app.routes.books import books_bp
     from app.routes.checkouts import checkouts_bp
     from app.routes.homepage import homepage_bp
-    
+    from app.routes.reviews import reviews_bp
+
     app.register_blueprint(users_bp, url_prefix='/api/users')
     app.register_blueprint(books_bp, url_prefix='/api/books')
     app.register_blueprint(checkouts_bp, url_prefix='/api/checkouts')
     app.register_blueprint(homepage_bp)
+    app.register_blueprint(reviews_bp, url_prefix='/api/reviews')
     
     return app
