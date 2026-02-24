@@ -278,20 +278,7 @@ const app = {
       this.navigateTo("home");
       this.loadRecommendations();
     } else {
-      // Try mock data fallback
-      const mockUser = MOCK_USERS.find(
-        (u) => u.username === username && u.password === password
-      );
-      if (mockUser) {
-        this.currentUser = { user_id: mockUser.user_id, username: mockUser.username };
-        localStorage.setItem("savedUser", JSON.stringify(this.currentUser));
-        this.updateLoginState();
-        this.showToast(`Welcome back, ${mockUser.username}!`, "success");
-        this.navigateTo("home");
-        this.loadRecommendations();
-      } else {
-        this.showToast("Invalid username or password.", "error");
-      }
+      this.showToast("Invalid username or password.", "error");
     }
   },
 
@@ -327,18 +314,7 @@ const app = {
       this.showToast(`Account created! Welcome, ${result.username}!`, "success");
       this.navigateTo("home");
     } else {
-      // Mock fallback: create a local user
-      const newUser = {
-        user_id: Date.now(),
-        username: username,
-        created_at: new Date().toISOString().split("T")[0],
-      };
-      MOCK_USERS.push({ ...newUser, password });
-      this.currentUser = newUser;
-      localStorage.setItem("savedUser", JSON.stringify(newUser));
-      this.updateLoginState();
-      this.showToast(`Account created! Welcome, ${username}!`, "success");
-      this.navigateTo("home");
+      this.showToast("Username already exists or registration failed.", "error");
     }
   },
 
