@@ -7,6 +7,10 @@ INTENTIONALLY INEFFICIENT for performance testing purposes.
 from flask import Blueprint, request, jsonify, render_template
 from app.database import get_db_connection
 from datetime import datetime, timedelta
+import time
+
+_trending_cache = {'data': None, 'timestamp': 0}
+TRENDING_CACHE_TTL = 60  # seconds
 
 homepage_bp = Blueprint('homepage', __name__)
 
@@ -47,14 +51,17 @@ def get_homepage_data():
 def get_trending_books():
     """
     Get top 5 trending books based on checkouts in the last 7 days.
-    INTENTIONALLY INEFFICIENT: No caching, calculates on every call.
+    Cached for TRENDING_CACHE_TTL seconds to reduce repeated DB hits.
     """
+    now = time.time()
+    if _trending_cache['data'] is not None and (now - _trending_cache['timestamp']) < TRENDING_CACHE_TTL:
+        return _trending_cache['data']
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     seven_days_ago = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')
-    
-    # Inefficient query: joins and aggregation without optimization
+
     cursor.execute('''
         SELECT b.*, COUNT(c.checkout_id) as checkout_count
         FROM books b
@@ -63,22 +70,24 @@ def get_trending_books():
         ORDER BY checkout_count DESC
         LIMIT 5
     ''', (seven_days_ago,))
-    
+
     trending = cursor.fetchall()
     conn.close()
-    
-    return [dict(book) for book in trending]
+
+    result = [dict(book) for book in trending]
+    _trending_cache['data'] = result
+    _trending_cache['timestamp'] = now
+    return result
 
 
 def get_user_recommendations(user_id):
     """
     Get personalized recommendations for a user.
-    INTENTIONALLY INEFFICIENT: Multiple separate queries, no caching,
-    recalculates everything on every page load.
+    Uses batch queries instead of per-author/per-year/per-user loops.
     """
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     # Get user's last 3 checkouts
     cursor.execute('''
         SELECT c.book_id, b.author, b.year_published, b.genre
@@ -88,9 +97,9 @@ def get_user_recommendations(user_id):
         ORDER BY c.checkout_date DESC
         LIMIT 3
     ''', (user_id,))
-    
+
     recent_checkouts = cursor.fetchall()
-    
+
     if not recent_checkouts:
         conn.close()
         return {
@@ -99,83 +108,63 @@ def get_user_recommendations(user_id):
             'similar_users': [],
             'message': 'No checkout history found. Check out some books to get recommendations!'
         }
-    
+
     # Extract authors, years from recent checkouts
     recent_authors = list(set([c['author'] for c in recent_checkouts if c['author']]))
     recent_years = list(set([c['year_published'] for c in recent_checkouts if c['year_published']]))
     recent_book_ids = [c['book_id'] for c in recent_checkouts]
-    
-    # INEFFICIENT: Separate query for each recommendation type
-    
-    # 1. Books by same author(s)
-    by_author = []
-    for author in recent_authors:
-        # Intentionally inefficient: separate query per author
-        cursor.execute('''
-            SELECT * FROM books
-            WHERE author = ? AND book_id NOT IN ({})
-            LIMIT 5
-        '''.format(','.join('?' * len(recent_book_ids))),
-        [author] + recent_book_ids)
-        by_author.extend([dict(b) for b in cursor.fetchall()])
-    
-    # 2. Books from same year(s)
-    by_year = []
-    for year in recent_years:
-        # Intentionally inefficient: separate query per year
-        cursor.execute('''
-            SELECT * FROM books
-            WHERE year_published = ? AND book_id NOT IN ({})
-            LIMIT 5
-        '''.format(','.join('?' * len(recent_book_ids))),
-        [year] + recent_book_ids)
-        by_year.extend([dict(b) for b in cursor.fetchall()])
-    
-    # 3. Books checked out by similar users
-    # VERY INEFFICIENT: Multiple nested queries
-    similar_users_books = []
-    
-    # Find users who checked out the same books
+    exclude_placeholders = ','.join('?' * len(recent_book_ids))
+
+    # 1. Books by same author(s) — single batch query with IN clause
+    author_placeholders = ','.join('?' * len(recent_authors))
     cursor.execute('''
-        SELECT DISTINCT user_id FROM checkouts
-        WHERE book_id IN ({}) AND user_id != ?
-    '''.format(','.join('?' * len(recent_book_ids))),
-    recent_book_ids + [user_id])
-    
-    similar_users = [row['user_id'] for row in cursor.fetchall()]
-    
-    # For each similar user, get their other checkouts
-    # INTENTIONALLY INEFFICIENT: Loop with individual queries
-    for similar_user_id in similar_users[:5]:  # Limit to 5 similar users
-        cursor.execute('''
-            SELECT DISTINCT b.*
-            FROM checkouts c
-            JOIN books b ON c.book_id = b.book_id
-            WHERE c.user_id = ? 
-            AND c.book_id NOT IN ({})
-            LIMIT 3
-        '''.format(','.join('?' * len(recent_book_ids))),
-        [similar_user_id] + recent_book_ids)
-        
-        similar_users_books.extend([dict(b) for b in cursor.fetchall()])
-    
+        SELECT * FROM books
+        WHERE author IN ({}) AND book_id NOT IN ({})
+        LIMIT 10
+    '''.format(author_placeholders, exclude_placeholders),
+    recent_authors + recent_book_ids)
+    by_author = [dict(b) for b in cursor.fetchall()]
+
+    # 2. Books from same year(s) — single batch query with IN clause
+    year_placeholders = ','.join('?' * len(recent_years))
+    cursor.execute('''
+        SELECT * FROM books
+        WHERE year_published IN ({}) AND book_id NOT IN ({})
+        LIMIT 10
+    '''.format(year_placeholders, exclude_placeholders),
+    recent_years + recent_book_ids)
+    by_year = [dict(b) for b in cursor.fetchall()]
+
+    # 3. Books checked out by similar users — single JOIN query instead of nested loop
+    cursor.execute('''
+        SELECT DISTINCT b.*
+        FROM checkouts c1
+        JOIN checkouts c2 ON c1.book_id = c2.book_id AND c2.user_id != ?
+        JOIN books b ON b.book_id = c2.book_id
+        WHERE c1.user_id = ?
+        AND b.book_id NOT IN ({})
+        LIMIT 10
+    '''.format(exclude_placeholders),
+    [user_id, user_id] + recent_book_ids)
+    similar_users_books = [dict(b) for b in cursor.fetchall()]
+
     conn.close()
-    
-    # Remove duplicates (inefficiently)
+
+    # Deduplicate
     seen_ids = set()
     unique_by_author = []
     for book in by_author:
         if book['book_id'] not in seen_ids:
             seen_ids.add(book['book_id'])
             unique_by_author.append(book)
-    
+
     seen_ids_year = set()
     unique_by_year = []
     for book in by_year:
         if book['book_id'] not in seen_ids_year:
             seen_ids_year.add(book['book_id'])
             unique_by_year.append(book)
-    
+
     seen_ids_similar = set()
     unique_similar = []
     for book in similar_users_books:
