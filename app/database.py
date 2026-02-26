@@ -91,6 +91,7 @@ def init_db():
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_checkouts_user ON checkouts(user_id)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_checkouts_book ON checkouts(book_id)')
     cursor.execute('CREATE INDEX IF NOT EXISTS idx_checkouts_date ON checkouts(checkout_date)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_reviews_book ON reviews(book_id)')
     
     conn.commit()
     conn.close()
